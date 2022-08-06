@@ -13,8 +13,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -114,14 +117,8 @@ constructor(
 
     private fun publishBlog(){
         state.value?.let { state ->
-            val title = RequestBody.create(
-                MediaType.parse("text/plain"),
-                state.title
-            )
-            val body = RequestBody.create(
-                MediaType.parse("text/plain"),
-                state.body
-            )
+            val title = state.title.toRequestBody("text/plain".toMediaTypeOrNull())
+            val body = state.body.toRequestBody("text/plain".toMediaTypeOrNull())
             if(state.uri == null){
                 onTriggerEvent(CreateBlogEvents.Error(
                     stateMessage = StateMessage(
@@ -138,11 +135,7 @@ constructor(
                 state.uri.path?.let { filePath ->
                     val imageFile = File(filePath)
                     if(imageFile.exists()){
-                        val requestBody =
-                            RequestBody.create(
-                                MediaType.parse("image/*"),
-                                imageFile
-                            )
+                        val requestBody =imageFile.asRequestBody("image/*".toMediaTypeOrNull())
                         multipartBody = MultipartBody.Part.createFormData(
                             "image",
                             imageFile.name,

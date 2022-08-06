@@ -68,6 +68,7 @@ class CategoryAdapter(
             }
 
             binding.txtName.text = category.name
+            binding.txtDescription.text = category.description
             //binding.row.isChecked = category.isSelected
         }
     }

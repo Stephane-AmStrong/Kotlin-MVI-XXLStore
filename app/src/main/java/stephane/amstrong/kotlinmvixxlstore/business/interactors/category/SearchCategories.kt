@@ -1,25 +1,28 @@
 package stephane.amstrong.kotlinmvixxlstore.business.interactors.category
 
 import android.util.Log
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.CategoryDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.returnOrderedCategoryQuery
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.toCategory
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.CategoryApi
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.CategoryDto
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.toCategory
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.toEntity
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.handleUseCaseException
 import stephane.amstrong.kotlinmvixxlstore.business.domain.models.Authentication
 import stephane.amstrong.kotlinmvixxlstore.business.domain.models.Category
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import stephane.amstrong.kotlinmvixxlstore.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import stephane.amstrong.kotlinmvixxlstore.presentation.category.list.CategoryFilterOptions
+import stephane.amstrong.kotlinmvixxlstore.presentation.category.list.CategoryOrderOptions
 
 class SearchCategories(
     private val categoryApi: CategoryApi,
     private val categoryDao: CategoryDao
 ) {
+
     private val TAG: String = "AppDebug"
 
     fun execute(
@@ -28,17 +31,20 @@ class SearchCategories(
         withTheName: String?,
         orderBy: String?,
         pageNumber: Int?,
-        //pageSize: Int?,
+        //filter: CategoryFilterOptions,
+        //order: CategoryOrderOptions,
     ): Flow<DataState<List<Category>>> = flow {
         emit(DataState.loading<List<Category>>())
+        if (authentication == null) throw Exception(ERROR_AUTH_TOKEN_INVALID)
 
-        Log.d(TAG, "execute SearchCategories")
+        // get Categories from network
+        //val filterAndOrder = order.value + filter.value // Ex: -date_updated
 
-        if (authentication == null) throw Exception(ErrorHandling.ERROR_AUTH_TOKEN_INVALID)
+        try { // catch network exception
+            Log.d(TAG, "trying to map fetched categories")
 
-        try {
             val categories = categoryApi.search(
-                "Bearer ${authentication.accessToken}",
+                "Bearer ${authentication.accessToken.value}",
                 searchTerm = searchTerm,
                 withTheName = withTheName,
                 orderBy = orderBy,
@@ -46,11 +52,8 @@ class SearchCategories(
                 pageSize = Constants.PAGINATION_PAGE_SIZE,
             ).map { it.toCategory() }
 
-            Log.d(TAG, "execute SearchCategories: accessToken : ${authentication.accessToken}")
-
-            // Insert into cache
+            // Insert into categoryDao
             for (category in categories) {
-                Log.d(TAG, "execute: Insert into cache : $category")
                 try {
                     categoryDao.insert(category.toEntity())
                 } catch (e: Exception) {
@@ -58,10 +61,12 @@ class SearchCategories(
                 }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error: ", e )
+
             emit(
                 DataState.error<List<Category>>(
                     response = Response(
-                        message = "Unable to update the cache.",
+                        message = "Unable to update the categoryDao.",
                         uiComponentType = UIComponentType.None(),
                         messageType = MessageType.Error()
                     )
@@ -69,7 +74,7 @@ class SearchCategories(
             )
         }
 
-        // emit from cache
+        // emit from categoryDao
         val cachedCategories = categoryDao.returnOrderedCategoryQuery(
             searchTerm = searchTerm,
             withTheName = withTheName,
@@ -80,6 +85,26 @@ class SearchCategories(
 
         emit(DataState.data(response = null, data = cachedCategories))
     }.catch { e ->
+        Log.e(TAG, "mapping2 Error: ", e )
         emit(handleUseCaseException(e))
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

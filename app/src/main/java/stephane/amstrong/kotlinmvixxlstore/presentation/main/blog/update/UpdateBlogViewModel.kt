@@ -17,8 +17,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -128,24 +131,15 @@ constructor(
     private fun update(){
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
-                val title = RequestBody.create(
-                    MediaType.parse("text/plain"),
-                    blogPost.title
-                )
-                val body = RequestBody.create(
-                    MediaType.parse("text/plain"),
-                    blogPost.body
-                )
+                val title = blogPost.title.toRequestBody("text/plain".toMediaTypeOrNull())
+                val body = blogPost.body.toRequestBody("text/plain".toMediaTypeOrNull())
+
                 var multipartBody: MultipartBody.Part? = null
                 if(state.newImageUri != null){
                     state.newImageUri.path?.let { filePath ->
                         val imageFile = File(filePath)
                         if(imageFile.exists()){
-                            val requestBody =
-                                RequestBody.create(
-                                    MediaType.parse("image/*"),
-                                    imageFile
-                                )
+                            val requestBody =imageFile.asRequestBody("image/*".toMediaTypeOrNull())
                             multipartBody = MultipartBody.Part.createFormData(
                                 "image",
                                 imageFile.name,

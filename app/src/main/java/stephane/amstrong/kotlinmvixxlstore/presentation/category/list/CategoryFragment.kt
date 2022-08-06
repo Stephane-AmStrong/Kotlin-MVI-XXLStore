@@ -209,7 +209,7 @@ class CategoryFragment : BaseCategoryFragment(),
         binding.swipeRefresh.isRefreshing = false
     }
 
-    fun showFilterDialog(){
+    private fun showFilterDialog(){
         activity?.let {
             viewModel.state.value?.let { state ->
                 val filter = state.filter.value

@@ -10,7 +10,6 @@ import stephane.amstrong.kotlinmvixxlstore.business.domain.util.StateMessage
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.UIComponentType
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.doesMessageAlreadyExistInQueue
 import stephane.amstrong.kotlinmvixxlstore.business.interactors.category.GetOrderAndFilter
-import stephane.amstrong.kotlinmvixxlstore.business.interactors.category.SearchCategories
 import stephane.amstrong.kotlinmvixxlstore.presentation.session.SessionManager
 import stephane.amstrong.kotlinmvixxlstore.presentation.util.DataStoreKeys.Companion.CATEGORY_FILTER
 import stephane.amstrong.kotlinmvixxlstore.presentation.util.DataStoreKeys.Companion.CATEGORY_ORDER
@@ -18,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import stephane.amstrong.kotlinmvixxlstore.business.interactors.category.SearchCategories
 import javax.inject.Inject
 
 @HiltViewModel

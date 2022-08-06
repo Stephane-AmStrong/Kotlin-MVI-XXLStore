@@ -16,7 +16,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-//import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import stephane.amstrong.kotlinmvixxlstore.BuildConfig
@@ -44,7 +44,7 @@ object ApplicationModule{
         return GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
             .serializeSpecialFloatingPointValues()
-            .setLenient()
+            //.setLenient()
             .create()
     }
 
@@ -53,6 +53,7 @@ object ApplicationModule{
     fun provideRetrofitBuilder(gsonBuilder:  Gson): Retrofit.Builder{
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
+            .client(createClient())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
     }
 
@@ -70,14 +71,6 @@ object ApplicationModule{
     fun provideAuthenticationDao(db: AppDatabase): AuthenticationDao {
         return db.getAuthenticationDao()
     }
-
-    /*
-    @Singleton
-    @Provides
-    fun provideAccountPropertiesDao(db: AppDatabase): AccountDao {
-        return db.getAccountPropertiesDao()
-    }
-    */
 
     @Singleton
     @Provides
@@ -108,16 +101,13 @@ object ApplicationModule{
     }
 
 
-/*
     private fun createClient(): OkHttpClient {
         val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+            val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
             okHttpClientBuilder.addInterceptor(loggingInterceptor)
         }
         return okHttpClientBuilder.build()
     }
-*/
 
 }

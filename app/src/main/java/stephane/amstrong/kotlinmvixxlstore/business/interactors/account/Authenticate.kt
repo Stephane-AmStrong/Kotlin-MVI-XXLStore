@@ -55,7 +55,7 @@ class Authenticate(
         )
 
         // cache the Authentication information (don't know the username yet)
-        val result = authenticationDao.insertAndReplace(
+        val result = authenticationDao.insert(
             authentication.toEntity()
         )
 

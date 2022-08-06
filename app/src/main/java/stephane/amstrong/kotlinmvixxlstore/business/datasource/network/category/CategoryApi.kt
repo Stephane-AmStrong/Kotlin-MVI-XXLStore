@@ -53,7 +53,7 @@ interface CategoryApi {
     ): CategoryDto.CategoryResponse
 */
 
-    @GET("v1/Categories")
+    @GET("v1/categories")
     suspend fun search(
         @Header("Authorization") authorization: String,
         @Query("withTheName") withTheName: String?,
@@ -61,7 +61,6 @@ interface CategoryApi {
         @Query("pageSize") pageSize: Int?,
         @Query("orderBy") orderBy: String?,
         @Query("searchTerm") searchTerm: String?,
-        //@Path("version") version: Int,
     ): List<CategoryDto.CategoryResponse>
 
     @GET("v1/categories/{id}")

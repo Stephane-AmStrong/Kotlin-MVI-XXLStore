@@ -15,8 +15,8 @@ data class AuthenticationEntity(
     val userInfo: UserInfo,
 ){
 
-    @PrimaryKey(autoGenerate = true)
-    var pk: Long = 0
+    @PrimaryKey(autoGenerate = false)
+    var pk: Long = 1
 }
 
 fun AuthenticationDto.AuthenticationResponse.toAuthentication(): Authentication {

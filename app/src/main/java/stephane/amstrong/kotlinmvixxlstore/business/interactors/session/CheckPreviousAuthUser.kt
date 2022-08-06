@@ -22,12 +22,10 @@ class CheckPreviousAuthUser(
     ): Flow<DataState<Authentication>> = flow {
         emit(DataState.loading<Authentication>())
         var authentication: Authentication? = null
-        //val entity = authenticationDao.searchByEmail(email)
-        if(authentication != null){
-            authentication = authenticationDao.search()?.toAuthentication()
-            if(authentication != null){
-                emit(DataState.data(response = null, data = authentication))
-            }
+        val entity = authenticationDao.searchByEmail(email)
+        if(entity != null){
+            authentication = entity.toAuthentication()
+            emit(DataState.data(response = null, data = authentication))
         }
         if(authentication == null){
             throw Exception(ERROR_NO_PREVIOUS_AUTH_USER)

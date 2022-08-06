@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/blogFragment"
-        android:name="stephane.amstrong.kotlinmvixxlstore.presentation.main.blog.list.BlogFragment"
-        android:label="blogFragment"
-        tools:layout="@layout/fragment_blog">
+        android:name="stephane.amstrong.kotlinmvixxlstore.presentation.category.list.CategoryFragment"
+        android:label="categoryFragment"
+        tools:layout="@layout/fragment_category">
 
         <action
             android:id="@+id/action_blogFragment_to_viewBlogFragment"

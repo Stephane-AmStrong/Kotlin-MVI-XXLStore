@@ -118,4 +118,12 @@
     <string name="pattern_does_not_exist_in_cache">%1$s does not exist in the cache.</string>
     <string name="pattern_exist_on_server">%1$s exists on the server and in the cache.</string>
 
+
+    <!--  MainDialogActions  -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_create">Create</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_register">Register</string>
+    <string name="action_search">Search</string>
+
 </resources>

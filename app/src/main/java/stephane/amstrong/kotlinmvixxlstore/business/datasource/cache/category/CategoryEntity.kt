@@ -10,11 +10,11 @@ data class CategoryEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String,
-    val description: String,
+    val description: String?,
     val createdAt: Date,
-    val updatedAt: Date,
-    val createdBy: String,
-    val updatedBy: String,
+    val updatedAt: Date?,
+    val createdBy: String?,
+    val updatedBy: String?,
 )
 
 fun CategoryEntity.toCategory(): Category {
