@@ -15,12 +15,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+//import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import stephane.amstrong.kotlinmvixxlstore.BuildConfig
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.CategoryDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.CategoryApi
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -102,5 +106,18 @@ object ApplicationModule{
     fun provideCategoryDao(db: AppDatabase): CategoryDao {
         return db.getCategoryDao()
     }
+
+
+/*
+    private fun createClient(): OkHttpClient {
+        val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) {
+            val loggingInterceptor =
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+            okHttpClientBuilder.addInterceptor(loggingInterceptor)
+        }
+        return okHttpClientBuilder.build()
+    }
+*/
 
 }
