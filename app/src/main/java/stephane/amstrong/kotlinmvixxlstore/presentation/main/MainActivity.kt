@@ -12,7 +12,7 @@ import stephane.amstrong.kotlinmvixxlstore.R
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.StateMessageCallback
 import stephane.amstrong.kotlinmvixxlstore.databinding.ActivityMainBinding
 import stephane.amstrong.kotlinmvixxlstore.presentation.BaseActivity
-import stephane.amstrong.kotlinmvixxlstore.presentation.auth.AuthActivity
+import stephane.amstrong.kotlinmvixxlstore.presentation.account.AuthActivity
 import stephane.amstrong.kotlinmvixxlstore.presentation.session.SessionEvents
 import stephane.amstrong.kotlinmvixxlstore.presentation.util.processQueue
 import com.google.android.material.appbar.AppBarLayout
@@ -74,7 +74,10 @@ class MainActivity : BaseActivity() {
                         sessionManager.onTriggerEvent(SessionEvents.OnRemoveHeadFromQueue)
                     }
                 })
-            if (state.authToken == null || state.authToken.accountPk == -1) {
+//            if (state.authentication == null || state.authentication.accessToken == null) {
+//                navAuthActivity()
+//            }
+            if (state.authentication == null) {
                 navAuthActivity()
             }
         }

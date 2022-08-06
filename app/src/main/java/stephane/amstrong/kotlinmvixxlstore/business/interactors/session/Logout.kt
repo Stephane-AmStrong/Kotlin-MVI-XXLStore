@@ -1,6 +1,5 @@
 package stephane.amstrong.kotlinmvixxlstore.business.interactors.session
 
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.auth.AuthTokenDao
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.DataState
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.MessageType
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.Response
@@ -9,9 +8,10 @@ import stephane.amstrong.kotlinmvixxlstore.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationDao
 
 class Logout(
-    private val authTokenDao: AuthTokenDao,
+    private val authTokenDao: AuthenticationDao,
 ) {
     fun execute(): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())

@@ -1,4 +1,4 @@
-package stephane.amstrong.kotlinmvixxlstore.api
+package stephane.amstrong.kotlinmvixxlstore.business.datasource.network
 
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.*
 import retrofit2.HttpException

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.*
-import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_CREATED
+import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.SUCCESS_CREATED
 import stephane.amstrong.kotlinmvixxlstore.business.interactors.blog.PublishBlog
 import stephane.amstrong.kotlinmvixxlstore.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -152,7 +152,7 @@ constructor(
                 }
                 if(multipartBody != null){
                     publishBlog.execute(
-                        authToken = sessionManager.state.value?.authToken,
+                        authentication = sessionManager.state.value?.authentication,
                         title = title,
                         body = body,
                         image = multipartBody,
@@ -160,7 +160,7 @@ constructor(
                         this.state.value = state.copy(isLoading = dataState.isLoading)
 
                         dataState.data?.let { response ->
-                            if(response.message == SUCCESS_BLOG_CREATED){
+                            if(response.message == SUCCESS_CREATED){
                                 onTriggerEvent(CreateBlogEvents.OnPublishSuccess)
                             }else{
                                 appendToMessageQueue(

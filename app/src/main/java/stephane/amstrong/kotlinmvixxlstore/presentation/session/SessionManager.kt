@@ -3,7 +3,7 @@ package stephane.amstrong.kotlinmvixxlstore.presentation.session
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.datastore.AppDataStore
-import stephane.amstrong.kotlinmvixxlstore.business.domain.models.AuthToken
+import stephane.amstrong.kotlinmvixxlstore.business.domain.models.Authentication
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.StateMessage
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.SUCCESS_LOGOUT
@@ -51,7 +51,7 @@ constructor(
     fun onTriggerEvent(event: SessionEvents){
         when(event){
             is SessionEvents.Login -> {
-                login(event.authToken)
+                login(event.authentication)
             }
             is SessionEvents.Logout -> {
                 logout()
@@ -61,6 +61,9 @@ constructor(
             }
             is SessionEvents.OnRemoveHeadFromQueue ->{
                 removeHeadFromQueue()
+            }
+            is SessionEvents.Authenticate -> {
+                authenticate(event.authentication)
             }
         }
     }
@@ -93,9 +96,9 @@ constructor(
         state.value?.let { state ->
             checkPreviousAuthUser.execute(email).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
-                dataState.data?.let { authToken ->
-                    this.state.value = state.copy(authToken = authToken)
-                    onTriggerEvent(SessionEvents.Login(authToken))
+                dataState.data?.let { authentication ->
+                    this.state.value = state.copy(authentication = authentication)
+                    onTriggerEvent(SessionEvents.Login(authentication))
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
@@ -110,9 +113,15 @@ constructor(
         }
     }
 
-    private fun login(authToken: AuthToken){
+    private fun authenticate(authentication: Authentication){
         state.value?.let { state ->
-            this.state.value = state.copy(authToken = authToken)
+            this.state.value = state.copy(authentication = authentication)
+        }
+    }
+
+    private fun login(authentication: Authentication){
+        state.value?.let { state ->
+            this.state.value = state.copy(authentication = authentication)
         }
     }
 
@@ -122,7 +131,7 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
                 dataState.data?.let { response ->
                     if(response.message.equals(SUCCESS_LOGOUT)){
-                        this.state.value = state.copy(authToken = null)
+                        this.state.value = state.copy(authentication = null)
                         clearAuthUser()
                         onFinishCheckingPrevAuthUser()
                     }
@@ -148,18 +157,3 @@ constructor(
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

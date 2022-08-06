@@ -1,9 +1,8 @@
 package stephane.amstrong.kotlinmvixxlstore.business.interactors.blog
 
-import stephane.amstrong.kotlinmvixxlstore.api.handleUseCaseException
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.handleUseCaseException
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.main.OpenApiMainService
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.main.responses.toBlogPost
-import stephane.amstrong.kotlinmvixxlstore.business.domain.models.AuthToken
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.BlogPostDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.toEntity
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.*
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import stephane.amstrong.kotlinmvixxlstore.business.domain.models.Authentication
 import java.lang.Exception
 
 class PublishBlog(
@@ -22,18 +22,18 @@ class PublishBlog(
     private val TAG: String = "AppDebug"
 
     fun execute(
-        authToken: AuthToken?,
+        authentication: Authentication?,
         title: RequestBody,
         body: RequestBody,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
-        if(authToken == null){
+        if(authentication == null){
             throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // attempt update
         val createResponse = service.createBlog(
-            "Token ${authToken.token}",
+            "Token ${authentication.accessToken.value}",
             title,
             body,
             image
@@ -55,7 +55,7 @@ class PublishBlog(
         // Tell the UI it was successful
         emit(DataState.data<Response>(
             data = Response(
-                message = SuccessHandling.SUCCESS_BLOG_CREATED,
+                message = SuccessHandling.SUCCESS_CREATED,
                 uiComponentType = UIComponentType.None(),
                 messageType = MessageType.Success()
             ),

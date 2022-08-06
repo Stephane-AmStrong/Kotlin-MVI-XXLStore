@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.room.Room
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.AppDatabase
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.AppDatabase.Companion.DATABASE_NAME
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AccountDao
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.auth.AuthTokenDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.BlogPostDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.datastore.AppDataStore
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.datastore.AppDataStoreManager
@@ -19,6 +17,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationDao
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.CategoryDao
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.category.CategoryApi
 import javax.inject.Singleton
 
 @Module
@@ -37,6 +38,9 @@ object ApplicationModule{
     @Provides
     fun provideGsonBuilder(): Gson {
         return GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            .serializeSpecialFloatingPointValues()
+            .setLenient()
             .create()
     }
 
@@ -59,14 +63,24 @@ object ApplicationModule{
 
     @Singleton
     @Provides
-    fun provideAuthTokenDao(db: AppDatabase): AuthTokenDao {
-        return db.getAuthTokenDao()
+    fun provideAuthenticationDao(db: AppDatabase): AuthenticationDao {
+        return db.getAuthenticationDao()
     }
 
+    /*
     @Singleton
     @Provides
     fun provideAccountPropertiesDao(db: AppDatabase): AccountDao {
         return db.getAccountPropertiesDao()
+    }
+    */
+
+    @Singleton
+    @Provides
+    fun provideCategoryApi(retrofitBuilder: Retrofit.Builder): CategoryApi {
+        return retrofitBuilder
+            .build()
+            .create(CategoryApi::class.java)
     }
 
     @Singleton
@@ -81,6 +95,12 @@ object ApplicationModule{
     @Provides
     fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
         return db.getBlogPostDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(db: AppDatabase): CategoryDao {
+        return db.getCategoryDao()
     }
 
 }

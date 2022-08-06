@@ -167,7 +167,7 @@ constructor(
         clearList()
         state.value?.let { state ->
             searchBlogs.execute(
-                authToken = sessionManager.state.value?.authToken,
+                authentication = sessionManager.state.value?.authentication,
                 query = state.query,
                 page = state.page,
                 filter = state.filter,
@@ -195,7 +195,7 @@ constructor(
         incrementPageNumber()
         state.value?.let { state ->
             searchBlogs.execute(
-                authToken = sessionManager.state.value?.authToken,
+                authentication = sessionManager.state.value?.authentication,
                 query = state.query,
                 page = state.page,
                 filter = state.filter,

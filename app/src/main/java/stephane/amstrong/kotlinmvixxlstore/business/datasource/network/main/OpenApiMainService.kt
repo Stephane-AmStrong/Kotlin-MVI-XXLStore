@@ -9,11 +9,10 @@ import retrofit2.http.*
 
 interface OpenApiMainService {
 
-
     @GET("account/properties")
     suspend fun getAccount(
         @Header("Authorization") authorization: String
-    ): AccountDto
+    ): GenericResponse
 
     @PUT("account/properties/update")
     @FormUrlEncoded

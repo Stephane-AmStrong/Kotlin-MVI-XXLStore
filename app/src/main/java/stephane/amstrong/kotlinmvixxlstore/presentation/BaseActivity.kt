@@ -3,18 +3,13 @@ package stephane.amstrong.kotlinmvixxlstore.presentation
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.callbacks.onDismiss
-import stephane.amstrong.kotlinmvixxlstore.R
 import stephane.amstrong.kotlinmvixxlstore.presentation.session.SessionManager
-import stephane.amstrong.kotlinmvixxlstore.business.domain.util.*
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
-import stephane.amstrong.kotlinmvixxlstore.presentation.auth.login.LoginEvents
 import javax.inject.Inject
 
 abstract class BaseActivity: AppCompatActivity(),

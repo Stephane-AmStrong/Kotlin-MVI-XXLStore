@@ -2,24 +2,26 @@ package stephane.amstrong.kotlinmvixxlstore.business.datasource.cache
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AccountDao
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AccountEntity
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.auth.AuthTokenDao
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.auth.AuthTokenEntity
+import androidx.room.TypeConverters
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationDao
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationEntity
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.BlogPostDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.BlogPostEntity
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.CategoryDao
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.category.CategoryEntity
 
-@Database(entities = [AuthTokenEntity::class, AccountEntity::class, BlogPostEntity::class], version = 1)
+@Database(entities = [AuthenticationEntity::class, CategoryEntity::class, BlogPostEntity::class], version = 1)
+@TypeConverters(DateConverter::class)
 abstract class AppDatabase: RoomDatabase() {
 
-    abstract fun getAuthTokenDao(): AuthTokenDao
+    abstract fun getAuthenticationDao(): AuthenticationDao
 
-    abstract fun getAccountPropertiesDao(): AccountDao
+    abstract fun getCategoryDao(): CategoryDao
 
     abstract fun getBlogPostDao(): BlogPostDao
 
     companion object{
-        val DATABASE_NAME: String = "app_db"
+        const val DATABASE_NAME: String = "app_db"
     }
 
 

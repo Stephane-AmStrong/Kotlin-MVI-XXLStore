@@ -1,9 +1,8 @@
 package stephane.amstrong.kotlinmvixxlstore.business.interactors.blog
 
-import stephane.amstrong.kotlinmvixxlstore.api.handleUseCaseException
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.handleUseCaseException
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.main.OpenApiMainService
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.main.toBlogPost
-import stephane.amstrong.kotlinmvixxlstore.business.domain.models.AuthToken
 import stephane.amstrong.kotlinmvixxlstore.business.domain.models.BlogPost
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.*
 import stephane.amstrong.kotlinmvixxlstore.presentation.main.blog.list.BlogFilterOptions
@@ -16,6 +15,7 @@ import stephane.amstrong.kotlinmvixxlstore.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import stephane.amstrong.kotlinmvixxlstore.business.domain.models.Authentication
 
 class SearchBlogs(
     private val service: OpenApiMainService,
@@ -25,14 +25,14 @@ class SearchBlogs(
     private val TAG: String = "AppDebug"
 
     fun execute(
-        authToken: AuthToken?,
+        authentication: Authentication?,
         query: String,
         page: Int,
         filter: BlogFilterOptions,
         order: BlogOrderOptions,
     ): Flow<DataState<List<BlogPost>>> = flow {
         emit(DataState.loading<List<BlogPost>>())
-        if(authToken == null){
+        if(authentication == null){
             throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // get Blogs from network
@@ -40,7 +40,7 @@ class SearchBlogs(
 
         try{ // catch network exception
             val blogs = service.searchListBlogPosts(
-                "Token ${authToken.token}",
+                "Token ${authentication.accessToken.value}",
                 query = query,
                 ordering = filterAndOrder,
                 page = page

@@ -143,15 +143,15 @@ constructor(
     private fun confirmBlogExistsOnServer(pk: Int, slug: String, callback: OnCompleteCallback){
         state.value?.let { state ->
             confirmBlogExistsOnServer.execute(
-                authToken = sessionManager.state.value?.authToken,
+                authentication = sessionManager.state.value?.authentication,
                 pk = pk,
                 slug = slug,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { response ->
-                    if(response.message == SuccessHandling.SUCCESS_BLOG_DOES_NOT_EXIST_IN_CACHE
-                        || response.message == SuccessHandling.SUCCESS_BLOG_EXISTS_ON_SERVER
+                    if(response.message == SuccessHandling.SUCCESS_DOES_NOT_EXIST_IN_CACHE
+                        || response.message == SuccessHandling.SUCCESS_EXISTS_ON_SERVER
                     ){
                         // Blog exists in cache and on server. All is good.
                         callback.done()
@@ -175,13 +175,13 @@ constructor(
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
                 deleteBlogPost.execute(
-                    authToken = sessionManager.state.value?.authToken,
+                    authentication = sessionManager.state.value?.authentication,
                     blogPost = blogPost
                 ).onEach { dataState ->
                     this.state.value = state.copy(isLoading = dataState.isLoading)
 
                     dataState.data?.let { response ->
-                        if(response.message == SuccessHandling.SUCCESS_BLOG_DELETED){
+                        if(response.message == SuccessHandling.SUCCESS_DELETED){
                             onTriggerEvent(ViewBlogEvents.OnDeleteComplete)
                         }else{
                             appendToMessageQueue(
@@ -225,7 +225,7 @@ constructor(
     private fun isAuthor(slug: String){
         state.value?.let { state ->
             isAuthorOfBlogPost.execute(
-                authToken = sessionManager.state.value?.authToken,
+                authentication = sessionManager.state.value?.authentication,
                 slug = slug,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)

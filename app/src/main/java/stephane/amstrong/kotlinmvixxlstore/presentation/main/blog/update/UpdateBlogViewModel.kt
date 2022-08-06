@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.StateMessage
-import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
+import stephane.amstrong.kotlinmvixxlstore.business.domain.util.SuccessHandling.Companion.SUCCESS_UPDATED
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.UIComponentType
 import stephane.amstrong.kotlinmvixxlstore.business.domain.util.doesMessageAlreadyExistInQueue
 import stephane.amstrong.kotlinmvixxlstore.business.interactors.blog.GetBlogFromCache
@@ -155,7 +155,7 @@ constructor(
                     }
                 }
                 updateBlogPost.execute(
-                    authToken = sessionManager.state.value?.authToken,
+                    authentication = sessionManager.state.value?.authentication,
                     slug = state.blogPost.slug,
                     title = title,
                     body = body,
@@ -164,7 +164,7 @@ constructor(
                     this.state.value = state.copy(isLoading = dataState.isLoading)
 
                     dataState.data?.let { response ->
-                        if(response.message == SUCCESS_BLOG_UPDATED){
+                        if(response.message == SUCCESS_UPDATED){
                             onTriggerEvent(UpdateBlogEvents.OnUpdateComplete)
                         }else{
                             appendToMessageQueue(

@@ -1,11 +1,6 @@
 package stephane.amstrong.kotlinmvixxlstore.di
 
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AccountDao
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.auth.AuthTokenDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.datastore.AppDataStore
-import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.auth.OpenApiAuthService
-import stephane.amstrong.kotlinmvixxlstore.business.interactors.auth.Login
-import stephane.amstrong.kotlinmvixxlstore.business.interactors.auth.Register
 import stephane.amstrong.kotlinmvixxlstore.business.interactors.session.CheckPreviousAuthUser
 import stephane.amstrong.kotlinmvixxlstore.business.interactors.session.Logout
 import dagger.Module
@@ -14,6 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.account.AuthenticationDao
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.account.AccountApi
+import stephane.amstrong.kotlinmvixxlstore.business.interactors.account.Authenticate
 import javax.inject.Singleton
 
 @FlowPreview
@@ -23,48 +21,51 @@ object AuthModule{
 
     @Singleton
     @Provides
-    fun provideOpenApiAuthService(retrofitBuilder: Retrofit.Builder): OpenApiAuthService {
+    fun provideAccountApi(retrofitBuilder: Retrofit.Builder): AccountApi {
         return retrofitBuilder
             .build()
-            .create(OpenApiAuthService::class.java)
+            .create(AccountApi::class.java)
     }
 
     @Singleton
     @Provides
     fun provideCheckPrevAuthUser(
-        accountDao: AccountDao,
-        authTokenDao: AuthTokenDao,
+        authenticationDao: AuthenticationDao,
     ): CheckPreviousAuthUser {
         return CheckPreviousAuthUser(
-            accountDao,
-            authTokenDao
+            authenticationDao
         )
     }
 
     @Singleton
     @Provides
-    fun provideLogin(
-        service: OpenApiAuthService,
-        accountDao: AccountDao,
-        authTokenDao: AuthTokenDao,
+    fun provideAuthenticate(
+        accountApi: AccountApi,
+        authenticationDao: AuthenticationDao,
         appDataStoreManager: AppDataStore,
-    ): Login {
-        return Login(
-            service,
-            accountDao,
-            authTokenDao,
-            appDataStoreManager
+    ): Authenticate {
+        return Authenticate(
+            accountApi,
+            authenticationDao,
+            appDataStoreManager,
         )
     }
+
+    /*
+    accountApi: AccountApi,
+    authenticationDao: AuthenticationDao,
+    appDataStoreManager: AppDataStore,
+    */
 
     @Singleton
     @Provides
     fun provideLogout(
-        authTokenDao: AuthTokenDao,
+        authTokenDao: AuthenticationDao,
     ): Logout {
         return Logout(authTokenDao)
     }
 
+    /*
     @Singleton
     @Provides
     fun provideRegister(
@@ -80,6 +81,7 @@ object AuthModule{
             appDataStoreManager
         )
     }
+    */
 }
 
 

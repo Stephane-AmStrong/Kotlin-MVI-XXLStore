@@ -1,6 +1,5 @@
 package stephane.amstrong.kotlinmvixxlstore.business.interactors.blog
 
-import stephane.amstrong.kotlinmvixxlstore.api.handleUseCaseException
 import stephane.amstrong.kotlinmvixxlstore.business.domain.models.BlogPost
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.BlogPostDao
 import stephane.amstrong.kotlinmvixxlstore.business.datasource.cache.blog.toBlogPost
@@ -12,6 +11,7 @@ import stephane.amstrong.kotlinmvixxlstore.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import stephane.amstrong.kotlinmvixxlstore.business.datasource.network.handleUseCaseException
 
 class GetBlogFromCache(
     private val cache: BlogPostDao,
